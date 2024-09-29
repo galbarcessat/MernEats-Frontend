@@ -10,12 +10,19 @@ type CreateUserRequest = {
 
 export function useCreateMyUser() {
     const { getAccessTokenSilently } = useAuth0()
+    const {
+        mutateAsync: createUser,
+        isLoading,
+        isError,
+        isSuccess
+    } = useMutation(createMyUserRequest)
+
     async function createMyUserRequest(user: CreateUserRequest) {
         const accessToken = await getAccessTokenSilently()
         const response = await fetch(`${API_BASE_URL}/api/my/user`, {
             method: "POST",
             headers: {
-                "Authorization" : `Bearer ${accessToken}`,
+                "Authorization": `Bearer ${accessToken}`,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(user)
@@ -25,13 +32,6 @@ export function useCreateMyUser() {
             throw new Error("Failed to create user")
         }
     }
-
-    const {
-        mutateAsync: createUser,
-        isLoading,
-        isError,
-        isSuccess
-    } = useMutation(createMyUserRequest)
 
     return {
         createUser,
